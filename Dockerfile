@@ -43,17 +43,19 @@ RUN sh Miniconda3-latest-Linux-x86_64.sh -b -p /home/rob/.conda
 RUN /home/rob/.conda/bin/conda init zsh
 
 # add in my doot files
-COPY include/tmux.conf /home/rob/.tmux.conf
-COPY include/vimrc     /home/rob/.vimrc
+COPY --chown=rob:rob include/tmux.conf /home/rob/.tmux.conf
+COPY --chown=rob:rob include/vimrc     /home/rob/.vimrc
 
 # Install snakemake 
 RUN /home/rob/.conda/bin/conda install -c bioconda -c conda-forge snakemake --yes
 # add the syntax file
 RUN mkdir /home/rob/.vim/syntax -p
-COPY include/snakemake.vim /home/rob/.vim/syntax/snakemake.vim
-RUN echo "au BufNewFile,BufRead Snakefile set syntax=snakemake\nau BufNewFile,BufRead *.smk set syntax=snakemake" >> /home/rob/.vimrc
+COPY --chown=rob:rob include/snakemake.vim /home/rob/.vim/syntax/snakemake.vim
+RUN echo "au BufNewFile,BufRead Snakefile set syntax=snakemake\nau BufNewFile,BufRead *.smk set syntax=snakemake" >> .vimrc
 
 WORKDIR /home/rob
+
+
 #USER root
 #EXPOSE 22
 #CMD ["/usr/sbin/sshd", "-D"]
