@@ -62,8 +62,10 @@ RUN chmod u+x mc
 WORKDIR /home/rob/
 
 # add in my doot files
-COPY --chown=rob:rob include/tmux.conf /home/rob/.tmux.conf
-COPY --chown=rob:rob include/vimrc     /home/rob/.vimrc
+COPY include/tmux.conf /home/rob/.tmux.conf
+COPY include/vimrc     /home/rob/.vimrc
+RUN sudo chown rob:rob /home/rob/.tmux.conf
+RUN sudo chown rob:rob /home/rob/.vimrc
 
 # Install snakemake 
 RUN /home/rob/.conda/bin/conda install -c bioconda -c conda-forge snakemake --yes
@@ -73,21 +75,14 @@ RUN mkdir -p ~/.vim/autoload ~/.vim/bundle && curl -LSso ~/.vim/autoload/pathoge
 
 # add the syntax file
 RUN mkdir /home/rob/.vim/syntax -p
-COPY --chown=rob:rob include/snakemake.vim /home/rob/.vim/syntax/snakemake.vim
-RUN echo "au BufNewFile,BufRead Snakefile set syntax=snakemake\nau BufNewFile,BufRead *.smk set syntax=snakemake" >> .vimrc
+COPY include/snakemake.vim /home/rob/.vim/syntax/snakemake.vim
+RUN echo "au BufNewFile,BufRead Snakefile set syntax=snakemake\nau BufNewFile,BufRead *.smk set syntax=snakemake" >> /home/rob/.vimrc
 
 WORKDIR /home/rob
-<<<<<<< HEAD
-ENV PATH /home/rob/.local/bin:$PATH
+# this needs to be added to the zshrc because apparently conda mangeles the path
+RUN echo "export PATH=/home/rob/.local/bin:$PATH" >> /home/rob/.zshrc
 
 
 USER root
 EXPOSE 22
 CMD ["/usr/sbin/sshd", "-D"]
-=======
-
-
-#USER root
-#EXPOSE 22
-#CMD ["/usr/sbin/sshd", "-D"]
->>>>>>> 102487fd5675b731cf83b38a92384eb0eb49fd0d
